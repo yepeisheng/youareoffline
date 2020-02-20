@@ -1,0 +1,4 @@
+## Interface: 80300
+## Title: Offline checker
+## SavedVariables: MessageRecords
+OfflineChecker.lua
