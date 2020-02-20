@@ -7,8 +7,17 @@ const bot = new Wechaty();
 var room;
 bot.on('scan', (qrcode, status) => console.log(`Scan QR Code to login: ${status}\nhttps://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrcode)}`));
 bot.on('login', startTracking);
-bot.on('message', message => console.log(`Message: ${message}`));
+bot.on('message', commandHandle);
 bot.start()
+
+async function commandHandle(message) {
+	if (message.room().payload.topic === process.env.WECHAT_ROOM &&
+		message.text() === "查询当前在线情况") {
+		const summary = Object.keys(ONLINE_STATS)
+		.map(name => `${name}:${ONLINE_STATS[name] ? "在线" : "离线"}`).join("\n")
+		await room.say(summary);
+	}
+}
 
 async function startTracking() {
 	room = await bot.Room.find({topic: process.env.WECHAT_ROOM })
